@@ -1,24 +1,19 @@
 package org.apache.cordova;
 
+import android.net.Uri;
+import android.util.Log;
+
+import org.apache.cordova.CordovaResourceApi.OpenForReadResult;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.FileNotFoundException;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
-
-
-import android.net.Uri;
-import org.apache.cordova.CallbackContext;
-import org.apache.cordova.CordovaPlugin;
-import org.apache.cordova.CordovaResourceApi.OpenForReadResult;
-import org.apache.cordova.PluginResult;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import android.util.Log;
 
 public class Zip extends CordovaPlugin {
 
@@ -72,7 +67,10 @@ public class Zip extends CordovaPlugin {
             }
 
             File outputDir = resourceApi.mapUriToFile(outputUri);
-            outputDirectory = outputDir.getAbsolutePath();
+            // Use canonical instead of absolute so the canonical comparison below
+            // does not result in a security error if there were symlinks in the absolute
+            // path
+            outputDirectory = outputDir.getCanonicalPath();
             outputDirectory += outputDirectory.endsWith(File.separator) ? "" : File.separator;
             if (outputDir == null || (!outputDir.exists() && !outputDir.mkdirs())){
                 String errorMessage = "Could not create output directory";
