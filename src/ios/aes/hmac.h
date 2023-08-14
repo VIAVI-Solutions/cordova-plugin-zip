@@ -35,8 +35,6 @@
 #ifndef _HMAC_H
 #define _HMAC_H
 
-#include <memory.h>
-
 #if defined(__cplusplus)
 extern "C"
 {
